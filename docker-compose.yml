@@ -1,0 +1,31 @@
+version: "3.7"
+
+volumes:
+  postgres_data:
+
+services:
+
+  postgres:
+    image: postgres:15.3
+    container_name: learn_database
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=demo
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+  
+  db_migrate:
+    build: ./db_migrate
+    container_name: db_migrate
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: user
+      PGPASSWORD: password
+      DB_NAME: demo
+    restart: on-failure
+    depends_on:
+      - postgres
